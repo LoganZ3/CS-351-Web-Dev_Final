@@ -18,6 +18,27 @@ try {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['make']) && isset($_POST['model']) && isset($_POST['bodytype'])) {
+        // Insert new entry
+        $make = htmlspecialchars($_POST['make']);
+        $model = htmlspecialchars($_POST['model']);
+        $bodytype = htmlspecialchars($_POST['bodytype']);
+
+        
+        $insert_sql = 'INSERT INTO vehicles (make, model, bodytype) VALUES (:make, :model, :bodytype)';
+        $stmt_insert = $pdo->prepare($insert_sql);
+        $stmt_insert->execute(['make' => $make, 'model' => $model, 'bodytype' => $bodytype]);
+    } elseif (isset($_POST['delete_id'])) {
+        // Delete an entry
+        $delete_id = (int) $_POST['delete_id'];
+        
+        $delete_sql = 'DELETE FROM vehicles WHERE id = :id';
+        $stmt_delete = $pdo->prepare($delete_sql);
+        $stmt_delete->execute(['id' => $delete_id]);
+    }
+}
+
 // Get all vehicles for the catalog
 $sql = 'SELECT id, make, model, year, mileage, cost FROM vehicles';
 $stmt = $pdo->query($sql);
@@ -36,7 +57,7 @@ $stmt = $pdo->query($sql);
         <h1>EZimports Inventory</h1>
         <nav><p></p>
             <a href="index.html">Home</a> |
-            <a href="catalouge.php">Catalogue</a> | 
+            <a href="catalog.php">Catalogue</a> | 
             <a href="about.html">About</a>
             </p></nav>
     </header>
