@@ -29,67 +29,17 @@ $stmt = $pdo->query($sql);
     <meta charset="UTF-8">
     <title>Catalog - EZimports</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 20px auto;
-        }
-        .vehicle-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .vehicle-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .vehicle-image {
-            width: 100%;
-            height: 180px;
-            background: #ccc;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        .vehicle-details {
-            margin: 10px 0;
-        }
-        .vehicle-details h3 {
-            margin: 0;
-            font-size: 18px;
-            color: #333;
-        }
-        .vehicle-details p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .vehicle-actions {
-            text-align: center;
-        }
-        .btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    
 </head>
 <body>
+    <header>
+        <h1>EZimports Inventory</h1>
+        <nav><p></p>
+            <a href="index.html">Home</a> |
+            <a href="catalouge.php">Catalogue</a> | 
+            <a href="about.html">About</a>
+            </p></nav>
+    </header>
     <div class="container">
         <h1>Vehicle Catalog</h1>
         <div class="vehicle-grid">
@@ -97,7 +47,7 @@ $stmt = $pdo->query($sql);
             <div class="vehicle-card">
                 <div class="vehicle-image">
                     <!-- Placeholder for car image -->
-                    <img src="placeholder.jpg" alt="Vehicle Image" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="gtr.jpg" alt="Vehicle Image" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <div class="vehicle-details">
                     <h3><?php echo htmlspecialchars($row['make'] . ' ' . $row['model']); ?></h3>
