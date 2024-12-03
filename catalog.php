@@ -19,11 +19,15 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['make']) && isset($_POST['model']) && isset($_POST['bodytype'])) {
+    if (isset($_POST['year']) && isset($_POST['make']) && isset($_POST['model']) && isset($_POST['bodytype']) && isset($_POST['cost']) && isset($_POST['mileage'])) {
         // Insert new entry
+        $year = htmlspecialchars($_POST['year']);
         $make = htmlspecialchars($_POST['make']);
         $model = htmlspecialchars($_POST['model']);
-        $bodytype = htmlspecialchars($_POST['bodytype']);
+        $bodytype = htmlspecialchars($_POST['bodytype']); 
+        $cost = htmlspecialchars($_POST['cost']);
+        $mileage = htmlspecialchars($_POST['mileage']);
+
 
         
         $insert_sql = 'INSERT INTO vehicles (make, model, bodytype) VALUES (:make, :model, :bodytype)';
