@@ -18,31 +18,6 @@ try {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['year']) && isset($_POST['make']) && isset($_POST['model']) && isset($_POST['bodytype']) && isset($_POST['cost']) && isset($_POST['mileage'])) {
-        // Insert new entry
-        $year = htmlspecialchars($_POST['year']);
-        $make = htmlspecialchars($_POST['make']);
-        $model = htmlspecialchars($_POST['model']);
-        $bodytype = htmlspecialchars($_POST['bodytype']); 
-        $cost = htmlspecialchars($_POST['cost']);
-        $mileage = htmlspecialchars($_POST['mileage']);
-
-
-        
-        $insert_sql = 'INSERT INTO vehicles (make, model, bodytype) VALUES (:make, :model, :bodytype)';
-        $stmt_insert = $pdo->prepare($insert_sql);
-        $stmt_insert->execute(['make' => $make, 'model' => $model, 'bodytype' => $bodytype]);
-    } elseif (isset($_POST['delete_id'])) {
-        // Delete an entry
-        $delete_id = (int) $_POST['delete_id'];
-        
-        $delete_sql = 'DELETE FROM vehicles WHERE id = :id';
-        $stmt_delete = $pdo->prepare($delete_sql);
-        $stmt_delete->execute(['id' => $delete_id]);
-    }
-}
-
 // Get all vehicles for the catalog
 $sql = 'SELECT id, make, model, year, mileage, cost FROM vehicles';
 $stmt = $pdo->query($sql);
@@ -54,18 +29,88 @@ $stmt = $pdo->query($sql);
     <meta charset="UTF-8">
     <title>Catalog - EZimports</title>
     <link rel="stylesheet" href="styles.css">
-    
+    <style>
+        /* Styling for the button */
+        .open-popup-btn {
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Popup container styling */
+        .popup-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        /* Close button for popup */
+        .popup-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Overlay to dim background when popup is open */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>EZimports Inventory</h1>
-        <nav><p></p>
+        <nav>
             <a href="index.html">Home</a> |
             <a href="catalog.php">Catalogue</a> | 
             <a href="about.html">About</a>
-            </p></nav>
+        </nav>
     </header>
+    
     <div class="container">
+        <!-- Add Vehicle Button -->
+        <button class="open-popup-btn" id="openPopupBtn">Add Vehicle</button>
+
+        <!-- Popup Overlay -->
+        <div class="popup-overlay" id="popupOverlay"></div>
+
+        <!-- Popup Container -->
+        <div class="popup-container" id="popupContainer">
+            <button class="popup-close-btn" id="closePopupBtn">&times;</button>
+            <h3>Add a New Vehicle</h3>
+            <form>
+                <input type="text" placeholder="Year" required><br>
+                <input type="text" placeholder="Make" required><br>
+                <input type="text" placeholder="Model" required><br>
+                <input type="text" placeholder="Body Type" required><br>
+                <input type="text" placeholder="Mileage" required><br>
+                <input type="text" placeholder="Cost" required><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
         <h1>Vehicle Catalog</h1>
         <div class="vehicle-grid">
             <?php while ($row = $stmt->fetch()): ?>
@@ -90,5 +135,28 @@ $stmt = $pdo->query($sql);
             <?php endwhile; ?>
         </div>
     </div>
+
+    <script>
+        // JavaScript for opening and closing the popup
+        const openPopupBtn = document.getElementById('openPopupBtn');
+        const popupContainer = document.getElementById('popupContainer');
+        const popupOverlay = document.getElementById('popupOverlay');
+        const closePopupBtn = document.getElementById('closePopupBtn');
+
+        openPopupBtn.addEventListener('click', () => {
+            popupContainer.style.display = 'block';
+            popupOverlay.style.display = 'block';
+        });
+
+        closePopupBtn.addEventListener('click', () => {
+            popupContainer.style.display = 'none';
+            popupOverlay.style.display = 'none';
+        });
+
+        popupOverlay.addEventListener('click', () => {
+            popupContainer.style.display = 'none';
+            popupOverlay.style.display = 'none';
+        });
+    </script>
 </body>
 </html>
