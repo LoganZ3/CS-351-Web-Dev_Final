@@ -18,7 +18,43 @@ try {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-// Get all vehicles for the catalog
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vehicle'])) {
+    // Check if all required fields are set
+    if (
+        isset($_POST['year']) &&
+        isset($_POST['make']) &&
+        isset($_POST['model']) &&
+        isset($_POST['bodytype']) &&
+        isset($_POST['cost']) &&
+        isset($_POST['mileage'])
+    ) {
+        // Sanitize input
+        $year = htmlspecialchars($_POST['year']);
+        $make = htmlspecialchars($_POST['make']);
+        $model = htmlspecialchars($_POST['model']);
+        $bodytype = htmlspecialchars($_POST['bodytype']);
+        $cost = htmlspecialchars($_POST['cost']);
+        $mileage = htmlspecialchars($_POST['mileage']);
+
+        // Insert new entry into the database
+        $insert_sql = 'INSERT INTO vehicles (year, make, model, bodytype, cost, mileage) VALUES (:year, :make, :model, :bodytype, :cost, :mileage)';
+        $stmt = $pdo->prepare($insert_sql);
+        $stmt->execute([
+            'year' => $year,
+            'make' => $make,
+            'model' => $model,
+            'bodytype' => $bodytype,
+            'cost' => $cost,
+            'mileage' => $mileage
+        ]);
+
+        // Redirect to avoid form resubmission
+        header('Location: catalog.php');
+        exit;
+    }
+}
+
+// Fetch vehicles for the catalog
 $sql = 'SELECT id, make, model, year, mileage, cost FROM vehicles';
 $stmt = $pdo->query($sql);
 ?>
@@ -100,13 +136,14 @@ $stmt = $pdo->query($sql);
         <div class="popup-container" id="popupContainer">
             <button class="popup-close-btn" id="closePopupBtn">&times;</button>
             <h3>Add a New Vehicle</h3>
-            <form>
-                <input type="text" placeholder="Year" required><br>
-                <input type="text" placeholder="Make" required><br>
-                <input type="text" placeholder="Model" required><br>
-                <input type="text" placeholder="Body Type" required><br>
-                <input type="text" placeholder="Mileage" required><br>
-                <input type="text" placeholder="Cost" required><br>
+            <form method="POST" action="catalog.php">
+                <input type="hidden" name="add_vehicle" value="1">
+                <input type="text" name="year" placeholder="Year" required><br>
+                <input type="text" name="make" placeholder="Make" required><br>
+                <input type="text" name="model" placeholder="Model" required><br>
+                <input type="text" name="bodytype" placeholder="Body Type" required><br>
+                <input type="text" name="mileage" placeholder="Mileage" required><br>
+                <input type="text" name="cost" placeholder="Cost" required><br>
                 <button type="submit">Submit</button>
             </form>
         </div>
