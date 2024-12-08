@@ -18,6 +18,24 @@ try {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
 
+// Handle deletion of a vehicle
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])) {
+    $delete_id = (int) $_POST['delete_id'];
+
+    if ($delete_id > 0) {
+        $delete_sql = 'DELETE FROM vehicles WHERE id = :id';
+        $stmt_delete = $pdo->prepare($delete_sql);
+        if ($stmt_delete->execute(['id' => $delete_id])) {
+            // Redirect to avoid form resubmission
+            header('Location: catalog.php');
+            exit();
+        } else {
+            echo "<script>alert('Failed to delete vehicle');</script>";
+        }
+    }
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vehicle'])) {
     // Check if all required fields are set
     if (
@@ -35,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vehicle'])) {
         $bodytype = htmlspecialchars($_POST['bodytype']);
         $cost = htmlspecialchars($_POST['cost']);
         $mileage = htmlspecialchars($_POST['mileage']);
+
 
         // Insert new entry into the database
         $insert_sql = 'INSERT INTO vehicles (year, make, model, bodytype, cost, mileage) VALUES (:year, :make, :model, :bodytype, :cost, :mileage)';
