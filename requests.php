@@ -29,25 +29,28 @@
                     <label><input type="radio" name="ownership" value="no" onclick="toggleRangeFields(true)"> No</label>
                 </div>
 
-                <div class="range-container" id="rangeFields">
-                    <label>Mileage Range (miles):</label>
+                <div class="range-container">
+                    <label for="mileageRange">Mileage Range (miles):</label>
                     <div class="dual-slider">
-                        <input type="range" id="mileageMin" name="mileageMin" min="0" max="300000" step="1000" value="50000" 
-                               oninput="updateSlider('mileageMin', 'mileageMax', 'mileageLabel')">
-                        <input type="range" id="mileageMax" name="mileageMax" min="0" max="300000" step="1000" value="150000" 
-                               oninput="updateSlider('mileageMin', 'mileageMax', 'mileageLabel')">
-                        <span id="mileageLabel">50,000 - 150,000</span>
+                        <input type="number" id="mileageMin" name="mileageMin" min="0" max="300000" step="1000" value="50000" 
+                            oninput="updateSlider('mileage')">
+                        <input type="range" id="mileageRange" name="mileageRange" min="0" max="300000" step="1000" 
+                            value="50000" oninput="updateInputs('mileage')">
+                        <input type="number" id="mileageMax" name="mileageMax" min="0" max="300000" step="1000" value="150000" 
+                            oninput="updateSlider('mileage')">
                     </div>
 
-                    <label>Price Range ($):</label>
+                    <label for="priceRange">Price Range ($):</label>
                     <div class="dual-slider">
-                        <input type="range" id="priceMin" name="priceMin" min="1000" max="100000" step="1000" value="10000" 
-                               oninput="updateSlider('priceMin', 'priceMax', 'priceLabel')">
-                        <input type="range" id="priceMax" name="priceMax" min="1000" max="100000" step="1000" value="50000" 
-                               oninput="updateSlider('priceMin', 'priceMax', 'priceLabel')">
-                        <span id="priceLabel">$10,000 - $50,000</span>
+                        <input type="number" id="priceMin" name="priceMin" min="1000" max="100000" step="1000" value="10000" 
+                            oninput="updateSlider('price')">
+                        <input type="range" id="priceRange" name="priceRange" min="1000" max="100000" step="1000" 
+                            value="10000" oninput="updateInputs('price')">
+                        <input type="number" id="priceMax" name="priceMax" min="1000" max="100000" step="1000" value="50000" 
+                            oninput="updateSlider('price')">
                     </div>
                 </div>
+
 
                 <label for="port">Desired Port:</label>
                 <select id="port" name="port">
@@ -72,23 +75,29 @@
             rangeFields.style.display = show ? 'block' : 'none';
         }
 
-        function updateSlider(minId, maxId, labelId) {
-            const min = document.getElementById(minId);
-            const max = document.getElementById(maxId);
-            const label = document.getElementById(labelId);
+        function updateSlider(type) {
+    const minInput = document.getElementById(`${type}Min`);
+    const maxInput = document.getElementById(`${type}Max`);
+    const rangeInput = document.getElementById(`${type}Range`);
 
-            // Ensure minimum does not exceed maximum
-            if (parseInt(min.value) > parseInt(max.value)) {
-                min.value = max.value;
-            }
+    // Sync slider values with input boxes
+    rangeInput.value = Math.max(minInput.value, Math.min(maxInput.value, rangeInput.value));
+}
 
-            // Ensure maximum is not below minimum
-            if (parseInt(max.value) < parseInt(min.value)) {
-                max.value = min.value;
-            }
+function updateInputs(type) {
+    const rangeInput = document.getElementById(`${type}Range`);
+    const minInput = document.getElementById(`${type}Min`);
+    const maxInput = document.getElementById(`${type}Max`);
 
-            label.textContent = `${parseInt(min.value).toLocaleString()} - ${parseInt(max.value).toLocaleString()}`;
-        }
+    // Update inputs based on slider
+    const rangeValue = parseInt(rangeInput.value, 10);
+    if (rangeValue < parseInt(maxInput.value, 10)) {
+        minInput.value = rangeValue;
+    } else {
+        maxInput.value = rangeValue;
+    }
+}
+
     </script>
 </body>
 </html>
