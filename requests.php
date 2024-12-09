@@ -1,3 +1,51 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $host = 'localhost';
+    $db = 'vehicles';
+    $user = 'logan';
+    $password = 'logan'; // Use your AMMPS password
+
+    // Collect form data
+    $year = $_POST['year'];
+    $make = $_POST['make'];
+    $model = $_POST['model'];
+    $ownership = $_POST['ownership'];
+    $price = isset($_POST['price']) ? $_POST['price'] : null;
+    $vehiclecondition = $_POST['vehiclecondition'];
+    $port = $_POST['port'];
+
+    try {
+        // Establish a connection to the database
+        $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Prepare the SQL query
+        $stmt = $pdo->prepare("
+            INSERT INTO requests (year, make, model, ownership, price, vehiclecondition, port)
+            VALUES (:year, :make, :model, :ownership, :price, :vehiclecondition, :port)
+        ");
+
+        // Bind the form data to the SQL query
+        $stmt->bindParam(':year', $year);
+        $stmt->bindParam(':make', $make);
+        $stmt->bindParam(':model', $model);
+        $stmt->bindParam(':ownership', $ownership);
+        $stmt->bindParam(':price', $price, PDO::PARAM_INT);
+        $stmt->bindParam(':vehiclecondition', $vehiclecondition);
+        $stmt->bindParam(':port', $port);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Confirm successful submission
+        echo "<script>alert('Request submitted successfully!');</script>";
+    } catch (PDOException $e) {
+        // Handle database errors
+        echo "<script>alert('Failed to submit request: " . $e->getMessage() . "');</script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,18 +84,18 @@
 
                 <div id="priceField" class="hidden">
                     <label for="price">Desired Price ($):</label>
-                    <p class="fine-print" style="font-size: smaller">*Price may fluctuate within $5000 of the entered value.</p>
-                    <input type="number" id="price" name="price" min="1000" max="100000" step="1000" placeholder="Enter price" required>
+                    <input type="number" id="price" name="price" min="1000" max="100000" step="1000" placeholder="Enter price">
+                    <p class="fine-print">*Price may fluctuate within $5000 of the entered value.</p>
                 </div>
 
-                <label for="condition">Desired Condition of Vehicle:</label>
-                <select id="condition" name="condition" required>
+                <label for="vehiclecondition">Desired condition of Vehicle:</label>
+                <select id="vehiclecondition" name="vehiclecondition" required>
                     <option value="Excellent">Excellent</option>
                     <option value="Very Good">Very Good</option>
                     <option value="Good">Good</option>
                     <option value="Bad">Bad</option>
                 </select>
-                <p class="fine-print" style="font-size: smaller">*Condition will heavily impact availability and wait time for specific vehicles.</p>
+                <p class="fine-print">*Condition will heavily impact availability and wait time for specific vehicles.</p>
 
                 <label for="port">Desired Port:</label>
                 <select id="port" name="port" required>

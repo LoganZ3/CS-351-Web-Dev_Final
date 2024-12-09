@@ -83,6 +83,7 @@ $stmt = $pdo->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Catalog - EZimports</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Styling for the button */
@@ -140,6 +141,7 @@ $stmt = $pdo->query($sql);
         <nav>
             <a href="index.html">Home</a> |
             <a href="catalog.php">Catalogue</a> | 
+            <a href="requests.php">Requests</a> | 
             <a href="about.html">About</a>
         </nav>
     </header>
@@ -191,6 +193,9 @@ $stmt = $pdo->query($sql);
             <?php endwhile; ?>
         </div>
     </div>
+    <footer class="footer">
+        <p>© 2024 EZImports. All rights reserved.</p>
+    </footer>
 
     <script>
         // JavaScript for opening and closing the popup
