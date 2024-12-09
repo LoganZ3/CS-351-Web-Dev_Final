@@ -204,6 +204,7 @@ body {
     color: rgb(180, 180, 180);
     padding: 20px;
     margin: 20px auto;
+    margin-bottom: 50px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 700px;
@@ -241,31 +242,23 @@ body {
 }
 
 .dual-slider {
+    position: relative;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 10px;
-}
-
-.dual-slider input[type="number"] {
-    width: 80px;
-    padding: 5px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
 }
 
 .dual-slider input[type="range"] {
-    flex-grow: 1;
     -webkit-appearance: none;
     appearance: none;
     height: 5px;
     background: #ddd;
-    border-radius: 5px;
     outline: none;
+    border-radius: 5px;
     cursor: pointer;
+    width: 45%;
 }
-
 
 .dual-slider span {
     font-size: 0.9rem;

@@ -25,35 +25,25 @@
 
                 <label>Do you already own the vehicle?</label>
                 <div class="radio-group">
-                    <label><input type="radio" name="ownership" value="yes" onclick="toggleRangeFields(false)"> Yes</label>
-                    <label><input type="radio" name="ownership" value="no" onclick="toggleRangeFields(true)"> No</label>
+                    <label><input type="radio" name="ownership" value="yes"> Yes</label>
+                    <label><input type="radio" name="ownership" value="no"> No</label>
                 </div>
 
-                <div class="range-container">
-                    <label for="mileageRange">Mileage Range (miles):</label>
-                    <div class="dual-slider">
-                        <input type="number" id="mileageMin" name="mileageMin" min="0" max="300000" step="1000" value="50000" 
-                            oninput="updateSlider('mileage')">
-                        <input type="range" id="mileageRange" name="mileageRange" min="0" max="300000" step="1000" 
-                            value="50000" oninput="updateInputs('mileage')">
-                        <input type="number" id="mileageMax" name="mileageMax" min="0" max="300000" step="1000" value="150000" 
-                            oninput="updateSlider('mileage')">
-                    </div>
+                <label for="price">Desired Price ($):</label>
+                <p class="fine-print" style="font-size: smaller;">*Price may fluctuate within $5000 of the entered value.</p>
+                <input type="number" id="price" name="price" min="1000" max="1000000" step="1000" placeholder="Enter price" required>
 
-                    <label for="priceRange">Price Range ($):</label>
-                    <div class="dual-slider">
-                        <input type="number" id="priceMin" name="priceMin" min="1000" max="100000" step="1000" value="10000" 
-                            oninput="updateSlider('price')">
-                        <input type="range" id="priceRange" name="priceRange" min="1000" max="100000" step="1000" 
-                            value="10000" oninput="updateInputs('price')">
-                        <input type="number" id="priceMax" name="priceMax" min="1000" max="100000" step="1000" value="50000" 
-                            oninput="updateSlider('price')">
-                    </div>
-                </div>
-
+                <label for="condition">Desired Condition of Vehicle:</label>
+                <select id="condition" name="condition" required>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Very Good">Very Good</option>
+                    <option value="Good">Good</option>
+                    <option value="Bad">Bad</option>
+                </select>
+                <p class="fine-print" style="font-size: smaller;">*Condition will heavily impact availability and wait time for specific vehicles.</p>
 
                 <label for="port">Desired Port:</label>
-                <select id="port" name="port">
+                <select id="port" name="port" required>
                     <option value="Los Angeles">Los Angeles</option>
                     <option value="New York">New York</option>
                     <option value="Houston">Houston</option>
@@ -61,43 +51,12 @@
                     <option value="Seattle">Seattle</option>
                 </select>
 
-                <button type="submit" class="btn">Submit Request</button>
+                <button type="submit" class="btn" style="margin-top: 10px;">Submit Request</button>
             </form>
         </div>
     </main>
-    <footer>
-        <p >© 2024 EZImports. All rights reserved.</p>
+    <footer class="footer">
+        <p>© 2024 EZImports. All rights reserved.</p>
     </footer>
-
-    <script>
-        function toggleRangeFields(show) {
-            const rangeFields = document.getElementById('rangeFields');
-            rangeFields.style.display = show ? 'block' : 'none';
-        }
-
-        function updateSlider(type) {
-    const minInput = document.getElementById(`${type}Min`);
-    const maxInput = document.getElementById(`${type}Max`);
-    const rangeInput = document.getElementById(`${type}Range`);
-
-    // Sync slider values with input boxes
-    rangeInput.value = Math.max(minInput.value, Math.min(maxInput.value, rangeInput.value));
-}
-
-function updateInputs(type) {
-    const rangeInput = document.getElementById(`${type}Range`);
-    const minInput = document.getElementById(`${type}Min`);
-    const maxInput = document.getElementById(`${type}Max`);
-
-    // Update inputs based on slider
-    const rangeValue = parseInt(rangeInput.value, 10);
-    if (rangeValue < parseInt(maxInput.value, 10)) {
-        minInput.value = rangeValue;
-    } else {
-        maxInput.value = rangeValue;
-    }
-}
-
-    </script>
 </body>
 </html>
