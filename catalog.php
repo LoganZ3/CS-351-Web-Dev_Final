@@ -21,12 +21,10 @@ try {
 // Handle deletion of a vehicle
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])) {
     $delete_id = (int) $_POST['delete_id'];
-
     if ($delete_id > 0) {
         $delete_sql = 'DELETE FROM vehicles WHERE id = :id';
         $stmt_delete = $pdo->prepare($delete_sql);
         if ($stmt_delete->execute(['id' => $delete_id])) {
-            // Redirect to avoid form resubmission
             header('Location: catalog.php');
             exit();
         } else {
@@ -35,28 +33,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])) {
     }
 }
 
-
+// Handle adding a new vehicle
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vehicle'])) {
-    // Check if all required fields are set
     if (
-        isset($_POST['year']) &&
-        isset($_POST['make']) &&
-        isset($_POST['model']) &&
-        isset($_POST['bodytype']) &&
-        isset($_POST['cost']) &&
-        isset($_POST['mileage'])
+        isset($_POST['year'], $_POST['make'], $_POST['model'], $_POST['bodytype'], $_POST['cost'], $_POST['mileage'], $_POST['image_url'])
     ) {
-        // Sanitize input
         $year = htmlspecialchars($_POST['year']);
         $make = htmlspecialchars($_POST['make']);
         $model = htmlspecialchars($_POST['model']);
         $bodytype = htmlspecialchars($_POST['bodytype']);
         $cost = htmlspecialchars($_POST['cost']);
         $mileage = htmlspecialchars($_POST['mileage']);
+        $image_url = htmlspecialchars($_POST['image_url']);
 
-
-        // Insert new entry into the database
-        $insert_sql = 'INSERT INTO vehicles (year, make, model, bodytype, cost, mileage) VALUES (:year, :make, :model, :bodytype, :cost, :mileage)';
+        $insert_sql = 'INSERT INTO vehicles (year, make, model, bodytype, cost, mileage, image_url) VALUES (:year, :make, :model, :bodytype, :cost, :mileage, :image_url)';
         $stmt = $pdo->prepare($insert_sql);
         $stmt->execute([
             'year' => $year,
@@ -64,17 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vehicle'])) {
             'model' => $model,
             'bodytype' => $bodytype,
             'cost' => $cost,
-            'mileage' => $mileage
+            'mileage' => $mileage,
+            'image_url' => $image_url
         ]);
-
-        // Redirect to avoid form resubmission
         header('Location: catalog.php');
         exit;
     }
 }
 
 // Fetch vehicles for the catalog
-$sql = 'SELECT id, make, model, year, mileage, cost FROM vehicles';
+$sql = 'SELECT id, make, model, year, mileage, cost, image_url FROM vehicles';
 $stmt = $pdo->query($sql);
 ?>
 
@@ -86,44 +75,41 @@ $stmt = $pdo->query($sql);
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Styling for the button */
-        .open-popup-btn {
-            margin: 10px 0;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
+        .vehicle-image img {
             cursor: pointer;
+            transition: transform 0.2s ease;
         }
-
-        /* Popup container styling */
-        .popup-container {
+        .vehicle-image img:hover {
+            transform: scale(1.05);
+        }
+        .image-modal {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
         }
-
-        /* Close button for popup */
-        .popup-close-btn {
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            display: block;
+            margin: auto;
+        }
+        .image-modal-close {
             position: absolute;
             top: 10px;
             right: 10px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
             background: none;
             border: none;
-            font-size: 18px;
-            cursor: pointer;
         }
-
-        /* Overlay to dim background when popup is open */
-        .popup-overlay {
+        .image-modal-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -147,13 +133,9 @@ $stmt = $pdo->query($sql);
     </header>
     
     <div class="container">
-        <!-- Add Vehicle Button -->
         <button class="open-popup-btn" id="openPopupBtn">Add Vehicle</button>
 
-        <!-- Popup Overlay -->
         <div class="popup-overlay" id="popupOverlay"></div>
-
-        <!-- Popup Container -->
         <div class="popup-container" id="popupContainer">
             <button class="popup-close-btn" id="closePopupBtn">&times;</button>
             <h3>Add a New Vehicle</h3>
@@ -165,6 +147,7 @@ $stmt = $pdo->query($sql);
                 <input type="text" name="bodytype" placeholder="Body Type" required><br>
                 <input type="text" name="mileage" placeholder="Mileage" required><br>
                 <input type="text" name="cost" placeholder="Cost" required><br>
+                <input type="text" name="image_url" placeholder="Image URL" required><br>
                 <button type="submit">Submit</button>
             </form>
         </div>
@@ -174,8 +157,9 @@ $stmt = $pdo->query($sql);
             <?php while ($row = $stmt->fetch()): ?>
             <div class="vehicle-card">
                 <div class="vehicle-image">
-                    <!-- Placeholder for car image -->
-                    <img src="gtr.jpg" alt="Vehicle Image" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="Vehicle Image" 
+                         style="width:100%; height:100%; object-fit:cover;" 
+                         onclick="showImageModal('<?php echo htmlspecialchars($row['image_url']); ?>')">
                 </div>
                 <div class="vehicle-details">
                     <h3><?php echo htmlspecialchars($row['make'] . ' ' . $row['model']); ?></h3>
@@ -193,31 +177,8 @@ $stmt = $pdo->query($sql);
             <?php endwhile; ?>
         </div>
     </div>
-    <footer class="footer">
-        <p>© 2024 EZImports. All rights reserved.</p>
-    </footer>
 
-    <script>
-        // JavaScript for opening and closing the popup
-        const openPopupBtn = document.getElementById('openPopupBtn');
-        const popupContainer = document.getElementById('popupContainer');
-        const popupOverlay = document.getElementById('popupOverlay');
-        const closePopupBtn = document.getElementById('closePopupBtn');
-
-        openPopupBtn.addEventListener('click', () => {
-            popupContainer.style.display = 'block';
-            popupOverlay.style.display = 'block';
-        });
-
-        closePopupBtn.addEventListener('click', () => {
-            popupContainer.style.display = 'none';
-            popupOverlay.style.display = 'none';
-        });
-
-        popupOverlay.addEventListener('click', () => {
-            popupContainer.style.display = 'none';
-            popupOverlay.style.display = 'none';
-        });
-    </script>
-</body>
-</html>
+    <div class="image-modal-overlay" id="imageModalOverlay"></div>
+    <div class="image-modal" id="imageModal">
+        <button class="image-modal-close" id="imageModalClose">&times;</button>
+        <img id="modalImage" src="" alt="Enlarg
