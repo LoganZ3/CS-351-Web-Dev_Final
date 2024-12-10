@@ -3,7 +3,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $host = 'localhost';
     $db = 'vehicles';
     $user = 'logan';
-    $password = 'logan'; // Use your AMMPS password
+    $password = 'logan'; 
 
     // Collect form data
     $year = $_POST['year'];
@@ -34,13 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':vehiclecondition', $vehiclecondition);
         $stmt->bindParam(':port', $port);
 
-        // Execute the query
         $stmt->execute();
 
-        // Confirm successful submission
-        echo "<script>alert('Request submitted successfully!');</script>";
+        echo "<script>alert('Import request submitted successfully!');</script>";
     } catch (PDOException $e) {
-        // Handle database errors
         echo "<script>alert('Failed to submit request: " . $e->getMessage() . "');</script>";
     }
 }
@@ -62,6 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <header>
         <h1>EZImports - Request a Vehicle Import</h1>
+        <nav><p></p>
+            <a href="index.html">Home</a> |
+            <a href="catalog.php">Catalogue</a> | 
+            <a href="requests.php">Requests</a> | 
+            <a href="about.html">About</a>
+            </p></nav>
     </header>
     <main>
         <div class="form-container">
@@ -85,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div id="priceField" class="hidden">
                     <label for="price">Desired Price ($):</label>
                     <input type="number" id="price" name="price" min="1000" max="100000" step="1000" placeholder="Enter price">
-                    <p class="fine-print">*Price may fluctuate within $5000 of the entered value.</p>
+                    <p class="fine-print" style="font-size: smaller">*Price may fluctuate within $5000 of the entered value.</p>
                 </div>
 
                 <label for="vehiclecondition">Desired condition of Vehicle:</label>
@@ -95,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="Good">Good</option>
                     <option value="Bad">Bad</option>
                 </select>
-                <p class="fine-print">*Condition will heavily impact availability and wait time for specific vehicles.</p>
+                <p class="fine-print" style="font-size: smaller">*Condition will heavily impact availability and wait time for specific vehicles.</p>
 
                 <label for="port">Desired Port:</label>
                 <select id="port" name="port" required>
