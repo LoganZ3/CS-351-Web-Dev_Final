@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <header>
-        <h1>EZImports - Request a Vehicle Import</h1>
+        <h1>Request a Vehicle Import</h1>
         <nav><p></p>
             <a href="index.html">Home</a> |
             <a href="catalog.php">Catalogue</a> | 

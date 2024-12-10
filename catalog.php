@@ -133,24 +133,51 @@ $stmt = $pdo->query($sql);
     </header>
     
     <div class="container">
-        <button class="open-popup-btn" id="openPopupBtn">Add Vehicle</button>
+        <!-- Add Vehicle Button -->
+<button class="btn" id="openPopupBtn">Add Vehicle</button>
 
-        <div class="popup-overlay" id="popupOverlay"></div>
-        <div class="popup-container" id="popupContainer">
-            <button class="popup-close-btn" id="closePopupBtn">&times;</button>
-            <h3>Add a New Vehicle</h3>
-            <form method="POST" action="catalog.php">
-                <input type="hidden" name="add_vehicle" value="1">
-                <input type="text" name="year" placeholder="Year" required><br>
-                <input type="text" name="make" placeholder="Make" required><br>
-                <input type="text" name="model" placeholder="Model" required><br>
-                <input type="text" name="bodytype" placeholder="Body Type" required><br>
-                <input type="text" name="mileage" placeholder="Mileage" required><br>
-                <input type="text" name="cost" placeholder="Cost" required><br>
-                <input type="text" name="image_url" placeholder="Image URL" required><br>
-                <button type="submit">Submit</button>
-            </form>
+<!-- Popup Overlay -->
+<div class="popup-overlay" id="popupOverlay"></div>
+
+<!-- Popup Window -->
+<div class="popup-window" id="popupContainer">
+    <button class="popup-close-btn btn" id="closePopupBtn">&times;</button>
+    <h2>Add a New Vehicle</h2>
+    <form method="POST" action="catalog.php" class="popup-form">
+        <input type="hidden" name="add_vehicle" value="1">
+
+        <div class="form-group">
+            <label for="year">Year</label>
+            <input type="text" name="year" id="year" placeholder="Year" required>
         </div>
+        <div class="form-group">
+            <label for="make">Make</label>
+            <input type="text" name="make" id="make" placeholder="Make" required>
+        </div>
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" name="model" id="model" placeholder="Model" required>
+        </div>
+        <div class="form-group">
+            <label for="bodytype">Body Type</label>
+            <input type="text" name="bodytype" id="bodytype" placeholder="Body Type" required>
+        </div>
+        <div class="form-group">
+            <label for="mileage">Mileage</label>
+            <input type="text" name="mileage" id="mileage" placeholder="Mileage" required>
+        </div>
+        <div class="form-group">
+            <label for="cost">Cost</label>
+            <input type="text" name="cost" id="cost" placeholder="Cost" required>
+        </div>
+        <div class="form-group">
+            <label for="image_url">Image URL</label>
+            <input type="text" name="image_url" id="image_url" placeholder="Image URL" required>
+        </div>
+        <button type="submit" class="btn">Submit</button>
+    </form>
+</div>
+
 
         <h1>Vehicle Catalog</h1>
         <div class="vehicle-grid">
@@ -178,7 +205,32 @@ $stmt = $pdo->query($sql);
         </div>
     </div>
 
+    <footer class="footer">
+        <p>© 2024 EZImports. All rights reserved.</p>
+    </footer>
+
     <div class="image-modal-overlay" id="imageModalOverlay"></div>
     <div class="image-modal" id="imageModal">
         <button class="image-modal-close" id="imageModalClose">&times;</button>
-        <img id="modalImage" src="" alt="Enlarg
+        <img id="modalImage" src="" alt="Enlarg">
+
+<script>const openPopupBtn = document.getElementById('openPopupBtn');
+const popupContainer = document.getElementById('popupContainer');
+const popupOverlay = document.getElementById('popupOverlay');
+const closePopupBtn = document.getElementById('closePopupBtn');
+
+openPopupBtn.addEventListener('click', () => {
+    popupContainer.style.display = 'block';
+    popupOverlay.style.display = 'block';
+});
+
+closePopupBtn.addEventListener('click', () => {
+    popupContainer.style.display = 'none';
+    popupOverlay.style.display = 'none';
+});
+
+popupOverlay.addEventListener('click', () => {
+    popupContainer.style.display = 'none';
+    popupOverlay.style.display = 'none';
+});
+</script>
