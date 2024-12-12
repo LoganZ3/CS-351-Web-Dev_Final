@@ -81,12 +81,14 @@ main {
 .cta {
     height: 300px;
     align-content: center;
-    justify-content: center;
+    justify-items: center;
+    text-align: center;
     background-color: rgb(3, 2, 77);
     background-image: url('supra.jpg');
     background-size: cover;
     background-position: bottom;
     background-blend-mode: overlay;
+    min-height: 50vh;
 }
 
 footer {
@@ -120,8 +122,9 @@ a {
 
 /* General box styles */
 .box {
-    height: 200px;
-    width: 200px;
+    height: 180px;
+    width: 180px;
+    padding: 20px;
     display: flex; /* Center the number inside the box */
     justify-content: center;
     align-items: center;
